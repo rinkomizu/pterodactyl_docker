@@ -95,3 +95,11 @@ sudo docker compose up -d
 ```
 9. go back to your browser, `Management` > `Servers`, click on `Create new` and few in the blanks.
 10. you should be able to do the rest if you have gone this far, i need to stop here because the rest is up to you, some names and RAM configuration is already on the web, you can read it and setup it.
+
+# errors
+if the pterodactyl panel setup has error, you should debug by checking docker logs:
+```bash
+sudo docker compose logs -f
+```
+
+- most errors are in the [./data/wings/config.yml](./data/wings/config.yml)

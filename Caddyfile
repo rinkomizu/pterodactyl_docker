@@ -18,7 +18,7 @@ panel.example.com {
   encode
 
   # reverse proxy to the panel
-  reverse_proxy pterodactyl_panel:80 {
+  reverse_proxy panel:80 {
     header_down -Via
     header_up Host {http.request.host}
     header_up Origin {http.request.header.Origin}

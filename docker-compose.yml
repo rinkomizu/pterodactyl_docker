@@ -49,15 +49,19 @@ services:
     networks:
       - pterodactyl
 
-  pterodactyl_panel:
-    image: ghcr.io/pterodactyl/panel:1.13.1
+  panel:
+    image: ghcr.io/pterodactyl/panel:v1.14.1
     container_name: pterodactyl_panel
     restart: always
+    ports:
+      - "9104:80"
+    networks:
+      - pterodactyl
     volumes:
       - ./data/panel/panel_config:/app/var/
       - ./data/panel/nginx/http.d:/etc/nginx/http.d/
-      - ./panel/panel/nginx/letsencrypt:/etc/letsencrypt/
-      - ./panel/panel/panel_logs:/app/storage/logs
+      - ./data/panel/panel/nginx/letsencrypt:/etc/letsencrypt/
+      - ./data/panel/panel/panel_logs:/app/storage/logs
     environment:
       # original source: https://github.com/pterodactyl/panel/blob/1.0-develop/.env.example
       # you can comment or remove some environment variables if you don't need them.
@@ -79,7 +83,7 @@ services:
       - DB_PORT=3306
       - DB_DATABASE=${MARIADB_DATABASE:-panel} # do not remove this
       - DB_USERNAME=pterodactyl
-      - DB_PASSWORD=$MARIADB_DATABASE # do not remove this
+      - DB_PASSWORD=$MARIADB_PASSWORD # do not remove this
 
       - REDIS_HOST=panel_redis # using docker internal network to connect
       - REDIS_PASSWORD=null
@@ -102,24 +106,23 @@ services:
       #- MAIL_FROM_ADDRESS=no-reply@example.com
       #- MAIL_FROM_NAME="Pterodactyl Panel"
 
-  pterodactyl_wings:
-    image: ghcr.io/pterodactyl/wings:latest
+  wings:
+    image: ghcr.io/pterodactyl/wings:v1.13.1
     container_name: pterodactyl_wings
     restart: unless-stopped
-    networks:
-      - pterodactyl
-    ports:
-      - "8080:8080"
-      - "2022:2022"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    network_mode: "host"
     tty: true
     environment:
       TZ: "UTC" # change this to your preferred timezone
     volumes:
       # most of the environment variables in here use root system path (start with "/") because we give the wing access to docker socket
       # docker socket will find those paths to match with the paths inside docker image
+      - "./data/wings/config.yml:/etc/pterodactyl/config.yml"
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/var/lib/docker/containers/:/var/lib/docker/containers/"
-      - "/etc/pterodactyl/:/etc/pterodactyl/"
       - "/var/lib/pterodactyl/:/var/lib/pterodactyl/"
       - "/var/log/pterodactyl/:/var/log/pterodactyl/"
       - "/tmp/pterodactyl/:/tmp/pterodactyl/"
@@ -135,6 +138,6 @@ networks:
     driver: bridge
     ipam:
       config:
-        # change "40" in both subnet and gateway if your other docker containers already used it
-        - subnet: 172.40.0.0/16
-          gateway: 172.40.0.1
+        # change "42" in both subnet and gateway if your other docker containers already used it
+        - subnet: 172.42.0.0/16
+          gateway: 172.42.0.1
