@@ -1,0 +1,55 @@
+{
+  auto_https redirect # if you plan to deploy with HTTP but not HTTPS then comment this line
+  email mail@example.com # use for let's encrypt certification registration
+}
+
+# the pterodactyl frontend (panel)
+panel.example.com {
+  header {
+    Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "SAMEORIGIN"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    # remove server header
+    -Server
+  }
+
+  # performance compression
+  encode
+
+  # reverse proxy to the panel
+  reverse_proxy pterodactyl_panel:80 {
+    header_down -Via
+    header_up Host {http.request.host}
+    header_up Origin {http.request.header.Origin}
+    header_up X-Real-Ip {http.request.remote}
+    header_up X-Forwarded-For {http.request.remote}
+    header_up X-Forwarded-Proto {http.request.scheme}
+  }
+}
+
+# daemon endpoint
+wings.example.com {
+  header {
+    Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "SAMEORIGIN"
+    Referrer-Policy "strict-origin-when-cross-origin"
+
+    # remove server header
+    -Server
+  }
+
+  # performance compression
+  encode
+
+  # reverse proxy to the wings
+  reverse_proxy wings:8080 {
+    header_down -Via
+    header_up Host {http.request.host}
+    header_up Origin {http.request.header.Origin}
+    header_up X-Real-Ip {http.request.remote}
+    header_up X-Forwarded-For {http.request.remote}
+    header_up X-Forwarded-Proto {http.request.scheme}
+  }
+}
