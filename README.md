@@ -46,7 +46,8 @@ sudo docker compose exec panel php artisan p:user:make
 
 ## setup the wings
 > [!note]
-> you can only follow this section if you have finished the [#setup](#setup) section above.
+> - you can only follow this section if you have finished the [#setup](#setup) section above.\
+> - for the uploading limit to the panel, you should use `1024`M by default.
 
 1. open a browser and go to `https://panel.example.com` (where `panel.example.com` is the subdomain/domain that you own)
 2. log into the ADMINISTRATOR account from step 9 from [#setup](#setup) section.
@@ -102,4 +103,4 @@ if the pterodactyl panel setup has error, you should debug by checking docker lo
 sudo docker compose logs -f
 ```
 
-- most errors are in the [./data/wings/config.yml](./data/wings/config.yml)
+- most errors are in the [./data/wings/config.yml](./data/wings/config.yml).
