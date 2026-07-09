@@ -37,6 +37,17 @@ services:
     image: redis:latest
     container_name: panel_redis
     restart: always
+    command:
+      - redis-server
+      - --appendonly yes
+      - --appendfsync everysec
+      - --maxmemory 512mb
+      - --maxmemory-policy allkeys-lru
+      - --requirepass ${REDIS_PASSWORD}
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - ./data/panel/redis:/data
     deploy:
@@ -53,6 +64,12 @@ services:
     image: ghcr.io/pterodactyl/panel:v1.14.1
     container_name: pterodactyl_panel
     restart: always
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
     ports:
       - "9104:80"
     networks:
@@ -62,6 +79,10 @@ services:
       - ./data/panel/nginx/http.d:/etc/nginx/http.d/
       - ./data/panel/panel/nginx/letsencrypt:/etc/letsencrypt/
       - ./data/panel/panel/panel_logs:/app/storage/logs
+    tmpfs:
+      - /tmp:size=4g # temp upload and allocate on ram
+      - /run
+      - /var/run
     environment:
       # original source: https://github.com/pterodactyl/panel/blob/1.0-develop/.env.example
       # you can comment or remove some environment variables if you don't need them.
@@ -76,7 +97,7 @@ services:
 
       - LOG_CHANNEL=daily
       - LOG_DEPRECATIONS_CHANNEL=null
-      - LOG_LEVEL=debug
+      - LOG_LEVEL=warning
 
       - DB_CONNECTION=mysql # mysql method works with mariadb
       - DB_HOST=panel_mariadb # pterodactyl panel will connect to mariadb by using docker internal network, so use the the service name in here is enough
@@ -86,7 +107,7 @@ services:
       - DB_PASSWORD=$MARIADB_PASSWORD # do not remove this
 
       - REDIS_HOST=panel_redis # using docker internal network to connect
-      - REDIS_PASSWORD=null
+      - REDIS_PASSWORD=$REDIS_PASSWORD
       - REDIS_PORT=6379
 
       - CACHE_DRIVER=redis
@@ -110,6 +131,13 @@ services:
     image: ghcr.io/pterodactyl/wings:v1.13.1
     container_name: pterodactyl_wings
     restart: unless-stopped
+    cap_drop:
+    - ALL
+    cap_add:
+      - SYS_ADMIN
+      - SYS_PTRACE
+      - SYS_RESOURCE
+      - SYS_CHROOT
     dns:
       - 1.1.1.1
       - 8.8.8.8
