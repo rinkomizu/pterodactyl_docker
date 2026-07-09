@@ -17,7 +17,7 @@ git clone https://github.com/rinkomizu/pterodactyl_docker
 cp .env.example .env
 ```
 
-3. generate the `base64` for pterodactyl panel and then **COPY** it.
+3. generate the `base64` for pterodactyl panel and then **COPY** it (don't exclude the `base64:` prefix).
 ```bash
 echo "base64:$(openssl rand -base64 32)"
 ```
