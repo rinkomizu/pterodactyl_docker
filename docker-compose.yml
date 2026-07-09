@@ -66,10 +66,6 @@ services:
     restart: always
     security_opt:
       - no-new-privileges:true
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
     ports:
       - "9104:80"
     networks:
@@ -79,10 +75,6 @@ services:
       - ./data/panel/nginx/http.d:/etc/nginx/http.d/
       - ./data/panel/panel/nginx/letsencrypt:/etc/letsencrypt/
       - ./data/panel/panel/panel_logs:/app/storage/logs
-    tmpfs:
-      - /tmp:size=4g # temp upload and allocate on ram
-      - /run
-      - /var/run
     environment:
       # original source: https://github.com/pterodactyl/panel/blob/1.0-develop/.env.example
       # you can comment or remove some environment variables if you don't need them.
