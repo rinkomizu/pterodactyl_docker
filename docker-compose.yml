@@ -133,7 +133,9 @@ services:
     dns:
       - 1.1.1.1
       - 8.8.8.8
-    network_mode: "host"
+    ports:
+      - "9106:443"
+      - "9108:2022"
     tty: true
     environment:
       TZ: "UTC" # change this to your preferred timezone
