@@ -89,6 +89,7 @@ allowed_mounts: []
 remote: 'https://panel.example.com'
 ```
 - and then use a text editor and change the configuration a bit, make sure to double check and know what you are doing, and then paste it into [./data/wings/config.yml](./data/wings/config.yml) file.
+- you should change the `upload_limit` from `100` to `1024`M.
 8. and then go back to your terminal, restart all containers in this directory:
 ```bash
 sudo docker compose down
