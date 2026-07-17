@@ -4,7 +4,8 @@ i have used these `docker-compose` file for references:
 - https://github.com/pterodactyl/wings/blob/develop/docker-compose.example.yml
 - https://github.com/pterodactyl/panel/blob/1.0-develop/docker-compose.example.yml
 > [!note]
-> - in this setup, you will need a domain/subdomain, you can use `duckdns` if you don't have one.
+> - in this setup, you will need domains/subdomains, you can use `duckdns` if you don't have one.
+> - you need domains/subdomains for SSL certificates since the webui connects to the wings too so it might encounter security related errors and can't establish websocket connection.
 
 ## setup
 1. clone the repository
