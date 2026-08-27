@@ -120,7 +120,7 @@ services:
       #- MAIL_FROM_NAME="Pterodactyl Panel"
 
   wings:
-    image: ghcr.io/pterodactyl/wings:v1.13.1
+    image: ghcr.io/pterodactyl/wings:v1.13.3
     container_name: pterodactyl_wings
     restart: unless-stopped
     cap_drop:
